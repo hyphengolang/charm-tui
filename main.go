@@ -4,11 +4,12 @@ import (
 	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
+	page "github.com/hyphengolang/charm-tui/pages"
 )
 
 func main() {
 	// new model
-	app := NewDocument()
+	app := page.New()
 
 	p := tea.NewProgram(app)
 	if err := p.Start(); err != nil {
