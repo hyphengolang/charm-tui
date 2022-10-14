@@ -1,8 +1,6 @@
 package main
 
 import (
-	"strings"
-
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -10,15 +8,15 @@ type State struct {
 	Value int
 }
 
-type App struct {
+type Document struct {
 	pg Page
 
-	mpg map[Page]tea.Model
+	body map[Page]tea.Model
 }
 
-func NewDocument() App {
-	m := App{
-		mpg: map[Page]tea.Model{
+func NewDocument() Document {
+	m := Document{
+		body: map[Page]tea.Model{
 			PgOne: NewPageOne(5),
 			PgTwo: NewPageTwo(),
 		},
@@ -26,9 +24,18 @@ func NewDocument() App {
 	return m
 }
 
-func (a App) Init() tea.Cmd { return tea.Batch(tea.EnterAltScreen) }
+func (doc Document) Init() tea.Cmd {
+	var cmds []tea.Cmd
+	cmds = append(cmds, tea.EnterAltScreen)
 
-func (a App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	for _, m := range doc.body {
+		cmds = append(cmds, m.Init())
+	}
+
+	return tea.Batch(cmds...)
+}
+
+func (doc Document) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var (
 		cmds []tea.Cmd
 		cmd  tea.Cmd
@@ -40,25 +47,20 @@ func (a App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
-			return a, tea.Quit
+			return doc, tea.Quit
 		case tea.KeyTab:
-			a.pg.Next()
+			doc.pg.Next()
+		case tea.KeyShiftTab:
+			doc.pg.Prev()
 		}
 	}
 
-	if m, ok := a.mpg[a.pg]; ok {
-		a.mpg[a.pg], cmd = m.Update(msg)
+	if m, ok := doc.body[doc.pg]; ok {
+		doc.body[doc.pg], cmd = m.Update(msg)
 		cmds = append(cmds, cmd)
 	}
 
-	return a, tea.Batch(cmds...)
+	return doc, tea.Batch(cmds...)
 }
 
-func (a App) focusedPage() tea.Model { return a.mpg[a.pg] }
-
-func (a App) View() string {
-	var sb strings.Builder
-	sb.WriteString("This is the top-level application \u2022\n\n")
-	sb.WriteString(a.focusedPage().View())
-	return sb.String()
-}
+func (doc Document) View() string { return doc.body[doc.pg].View() }

@@ -20,7 +20,15 @@ func (pg *Page) Next() {
 	default:
 		*pg++
 	}
+}
 
+func (pg *Page) Prev() {
+	switch *pg {
+	case 0:
+		*pg = PgTwo
+	default:
+		*pg--
+	}
 }
 
 func (pg Page) String() string {
@@ -42,6 +50,9 @@ func NewPageOne(n int) PageOne { return PageOne{c: NewCounter(n)} }
 func (pg PageOne) Init() tea.Cmd { return tea.Batch() }
 
 func (pg PageOne) View() string {
+	// header
+	// main
+	// footer
 	var sb strings.Builder
 	sb.WriteString("This is Foo!!!\n\n")
 	sb.WriteString(pg.c.View())
