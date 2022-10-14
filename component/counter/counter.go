@@ -15,7 +15,7 @@ func (c Counter) Init() tea.Cmd { return tea.Batch() }
 
 func (c Counter) View() string {
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("Count: %d\n", c.Value))
+	sb.WriteString(fmt.Sprintf("Count: %d", c.Value))
 	return sb.String()
 }
 
