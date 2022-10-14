@@ -37,7 +37,7 @@ func (pg PageOne) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (pg PageOne) View() string {
 	var sb strings.Builder
-	sb.WriteString("This is Page 1!!!")
+	sb.WriteString("Page 1 is in progress")
 	sb.WriteString(pg.t.View())
 	return sb.String()
 }
