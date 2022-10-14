@@ -2,7 +2,7 @@ package page
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
-	css "github.com/charmbracelet/lipgloss"
+	styles "github.com/charmbracelet/lipgloss"
 	page01 "github.com/hyphengolang/charm-tui/pages/page-01"
 	page02 "github.com/hyphengolang/charm-tui/pages/page-02"
 )
@@ -55,6 +55,8 @@ func (doc Document) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			doc.Next()
 		case tea.KeyShiftTab:
 			doc.Prev()
+			// case tea.KeyBackspace:
+			// 	return doc, nil
 		}
 	}
 
@@ -67,25 +69,29 @@ func (doc Document) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (doc Document) View() string {
-	styles := css.NewStyle().BorderStyle(css.RoundedBorder())
+	styles := styles.NewStyle().BorderStyle(styles.RoundedBorder())
 
 	return styles.Render(doc.Current().View())
 }
 
 func (doc Document) Current() tea.Model { return doc.pg[doc.c] }
 
-func (doc *Document) Next() {
+func (doc *Document) Next() (tea.Model, tea.Cmd) {
 	if max := len(doc.pg) - 1; doc.c == max {
 		doc.c = 0
 	} else {
 		doc.c++
 	}
+
+	return doc.pg[doc.c], nil
 }
 
-func (doc *Document) Prev() {
+func (doc *Document) Prev() (tea.Model, tea.Cmd) {
 	if max := len(doc.pg) - 1; doc.c == 0 {
 		doc.c = max
 	} else {
 		doc.c--
 	}
+
+	return doc.pg[doc.c], nil
 }
