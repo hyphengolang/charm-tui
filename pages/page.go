@@ -3,8 +3,6 @@ package page
 import (
 	tea "github.com/charmbracelet/bubbletea"
 	styles "github.com/charmbracelet/lipgloss"
-	page01 "github.com/hyphengolang/charm-tui/pages/page-01"
-	page02 "github.com/hyphengolang/charm-tui/pages/page-02"
 )
 
 type State struct {
@@ -20,8 +18,8 @@ type Document struct {
 func New() Document {
 	m := Document{
 		pg: map[int]tea.Model{
-			0: page01.New(),
-			1: page02.New(5),
+			0: pageOne(),
+			1: pageTwo(5),
 		},
 	}
 	return m

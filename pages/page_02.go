@@ -1,4 +1,4 @@
-package page02
+package page
 
 import (
 	"strings"
@@ -7,15 +7,15 @@ import (
 	"github.com/hyphengolang/charm-tui/component/counter"
 )
 
-type Page struct {
+type PageTwo struct {
 	c counter.Counter
 }
 
-func New(n int) Page { return Page{c: counter.New(n)} }
+func pageTwo(n int) PageTwo { return PageTwo{c: counter.New(n)} }
 
-func (pg Page) Init() tea.Cmd { return tea.Batch(pg.c.Init()) }
+func (pg PageTwo) Init() tea.Cmd { return tea.Batch(pg.c.Init()) }
 
-func (pg Page) View() string {
+func (pg PageTwo) View() string {
 	var sb strings.Builder
 	sb.WriteString("This is Page 2!!!")
 	sb.WriteRune('\n')
@@ -23,7 +23,7 @@ func (pg Page) View() string {
 	return sb.String()
 }
 
-func (pg Page) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (pg PageTwo) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
