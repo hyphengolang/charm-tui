@@ -13,12 +13,12 @@ type State struct {
 type Document struct {
 	c uint
 
-	pgs map[uint]tea.Model
+	pg map[uint]tea.Model
 }
 
 func New() Document {
 	m := Document{
-		pgs: map[uint]tea.Model{
+		pg: map[uint]tea.Model{
 			0: page01.New(),
 			1: page02.New(5),
 		},
@@ -30,7 +30,7 @@ func (doc Document) Init() tea.Cmd {
 	var cmds []tea.Cmd
 	cmds = append(cmds, tea.EnterAltScreen)
 
-	for _, m := range doc.pgs {
+	for _, m := range doc.pg {
 		cmds = append(cmds, m.Init())
 	}
 
@@ -57,8 +57,8 @@ func (doc Document) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	if m, ok := doc.pgs[doc.c]; ok {
-		doc.pgs[doc.c], cmd = m.Update(msg)
+	if m, ok := doc.pg[doc.c]; ok {
+		doc.pg[doc.c], cmd = m.Update(msg)
 		cmds = append(cmds, cmd)
 	}
 
@@ -67,10 +67,10 @@ func (doc Document) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (doc Document) View() string { return doc.Current().View() }
 
-func (doc Document) Current() tea.Model { return doc.pgs[doc.c] }
+func (doc Document) Current() tea.Model { return doc.pg[doc.c] }
 
 func (doc *Document) Next() {
-	if max := uint(len(doc.pgs) - 1); doc.c == max {
+	if max := uint(len(doc.pg) - 1); doc.c == max {
 		doc.c = 0
 	} else {
 		doc.c++
@@ -78,7 +78,7 @@ func (doc *Document) Next() {
 }
 
 func (doc *Document) Prev() {
-	if max := uint(len(doc.pgs) - 1); doc.c == 0 {
+	if max := uint(len(doc.pg) - 1); doc.c == 0 {
 		doc.c = max
 	} else {
 		doc.c--
