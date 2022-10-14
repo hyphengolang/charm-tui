@@ -5,6 +5,17 @@ import (
 	styles "github.com/charmbracelet/lipgloss"
 )
 
+type levelMsg struct {
+}
+
+func levelUp() tea.Cmd {
+	return func() tea.Msg { return nil }
+}
+
+func levelDown() tea.Cmd {
+	return func() tea.Msg { return nil }
+}
+
 type State struct {
 	Value int
 }
@@ -50,12 +61,14 @@ func (doc Document) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return doc, tea.Quit
 		case tea.KeyTab:
-			doc.Next()
+			/* return */ doc.Next()
 		case tea.KeyShiftTab:
-			doc.Prev()
+			/* return */ doc.Prev()
 			// case tea.KeyBackspace:
 			// 	return doc, nil
 		}
+	case levelMsg:
+		return doc, nil
 	}
 
 	if m, ok := doc.pg[doc.c]; ok {
@@ -81,7 +94,7 @@ func (doc *Document) Next() (tea.Model, tea.Cmd) {
 		doc.c++
 	}
 
-	return doc.pg[doc.c], nil
+	return doc.pg[doc.c], levelDown()
 }
 
 func (doc *Document) Prev() (tea.Model, tea.Cmd) {
@@ -91,5 +104,5 @@ func (doc *Document) Prev() (tea.Model, tea.Cmd) {
 		doc.c--
 	}
 
-	return doc.pg[doc.c], nil
+	return doc.pg[doc.c], levelDown()
 }
