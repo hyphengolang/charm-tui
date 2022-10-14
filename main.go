@@ -9,9 +9,7 @@ import (
 
 func main() {
 	// new model
-	app := page.New()
-
-	p := tea.NewProgram(app)
+	p := tea.NewProgram(page.New())
 	if err := p.Start(); err != nil {
 		log.Fatalln(err)
 	}
