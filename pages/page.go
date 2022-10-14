@@ -1,8 +1,11 @@
 package page
 
 import (
+	"strings"
+
 	tea "github.com/charmbracelet/bubbletea"
-	styles "github.com/charmbracelet/lipgloss"
+	css "github.com/charmbracelet/lipgloss"
+	"github.com/hyphengolang/charm-tui/styles"
 )
 
 type State struct {
@@ -66,9 +69,15 @@ func (doc Document) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (doc Document) View() string {
-	styles := styles.NewStyle().BorderStyle(styles.RoundedBorder())
+	var sb strings.Builder
 
-	return styles.Render(doc.Current().View())
+	box := css.NewStyle().BorderStyle(css.RoundedBorder()).Render
+
+	sb.WriteString(box(doc.Current().View()))
+	sb.WriteRune('\n')
+	sb.WriteString(styles.Help(`ctrl+c: exit`))
+
+	return sb.String()
 }
 
 func (doc Document) Current() tea.Model { return doc.pg[doc.c] }
