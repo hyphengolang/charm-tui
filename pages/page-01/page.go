@@ -16,6 +16,6 @@ func (pg Page) Update(msg tea.Msg) (tea.Model, tea.Cmd) { return pg, nil }
 
 func (pg Page) View() string {
 	var sb strings.Builder
-	sb.WriteString("This is Page 1!!!\n\n")
+	sb.WriteString("This is Page 1!!!")
 	return sb.String()
 }

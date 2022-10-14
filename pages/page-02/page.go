@@ -17,7 +17,8 @@ func (pg Page) Init() tea.Cmd { return tea.Batch(pg.c.Init()) }
 
 func (pg Page) View() string {
 	var sb strings.Builder
-	sb.WriteString("This is Page 2!!!\n\n")
+	sb.WriteString("This is Page 2!!!")
+	sb.WriteRune('\n')
 	sb.WriteString(pg.c.View())
 	return sb.String()
 }

@@ -2,6 +2,7 @@ package page
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
+	css "github.com/charmbracelet/lipgloss"
 	page01 "github.com/hyphengolang/charm-tui/pages/page-01"
 	page02 "github.com/hyphengolang/charm-tui/pages/page-02"
 )
@@ -11,14 +12,14 @@ type State struct {
 }
 
 type Document struct {
-	c uint
+	c, w, h int
 
-	pg map[uint]tea.Model
+	pg map[int]tea.Model
 }
 
 func New() Document {
 	m := Document{
-		pg: map[uint]tea.Model{
+		pg: map[int]tea.Model{
 			0: page01.New(),
 			1: page02.New(5),
 		},
@@ -45,7 +46,7 @@ func (doc Document) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		_, _ = msg.Height, msg.Width
+		doc.h, doc.w = msg.Height, msg.Width
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
@@ -65,12 +66,16 @@ func (doc Document) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return doc, tea.Batch(cmds...)
 }
 
-func (doc Document) View() string { return doc.Current().View() }
+func (doc Document) View() string {
+	styles := css.NewStyle().BorderStyle(css.RoundedBorder())
+
+	return styles.Render(doc.Current().View())
+}
 
 func (doc Document) Current() tea.Model { return doc.pg[doc.c] }
 
 func (doc *Document) Next() {
-	if max := uint(len(doc.pg) - 1); doc.c == max {
+	if max := len(doc.pg) - 1; doc.c == max {
 		doc.c = 0
 	} else {
 		doc.c++
@@ -78,43 +83,9 @@ func (doc *Document) Next() {
 }
 
 func (doc *Document) Prev() {
-	if max := uint(len(doc.pg) - 1); doc.c == 0 {
+	if max := len(doc.pg) - 1; doc.c == 0 {
 		doc.c = max
 	} else {
 		doc.c--
 	}
-}
-
-// TODO enum could be removed
-// as it is nothing more than a counter
-type Page uint
-
-const (
-	One Page = iota
-	Two
-)
-
-func (pg *Page) Next() {
-	switch *pg {
-	case Two:
-		*pg = 0
-	default:
-		*pg++
-	}
-}
-
-func (pg *Page) Prev() {
-	switch *pg {
-	case 0:
-		*pg = Two
-	default:
-		*pg--
-	}
-}
-
-func (pg Page) String() string {
-	return [...]string{
-		"page_one",
-		"page_two",
-	}[pg]
 }
